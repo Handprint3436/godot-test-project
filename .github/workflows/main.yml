@@ -1,16 +1,24 @@
 on: 
   push:
-    tags:
-      - "v*"
+    branches: [ 'main' ]
 
-jobs:
+env:
+  VERSION_FILE: project.godot
+  VERSION_REGEX: config\/version=\"\K[0-9.\-A-z]*
+
+jobs:  
   export_game:
     runs-on: ubuntu-latest
     permissions: write-all
     name: Export Game
     steps:
     - name: checkout
-      uses: actions/checkout@v4.1.2
+      uses: actions/checkout@v4
+    - name: extract_version_number
+      shell: bash
+      run: |
+        VERSION_NUMBER=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
+        echo `Found Version number: ${{ env.VERSION_NUMBER }}`
     - name: export game
       id: export
       uses: firebelley/godot-export@v5.2.1
@@ -26,5 +34,5 @@ jobs:
       uses: ncipollo/release-action@v1.12.0
       with:
         generateReleaseNotes: true
-        tag: ${{ github.ref_name }}
+        tag: `v${{ env.VERSION_NUMBER }}`
         artifacts: ${{ steps.export.outputs.archive_directory }}/*
