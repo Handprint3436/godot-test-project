@@ -53,6 +53,9 @@ jobs:
     name: Publish to Pages
     needs: build_game
     steps:
+    - name: Checkout current branch
+      uses: actions/checkout@v4
+      
     - name: Install dependencies
       shell: bash
       run: |
@@ -66,12 +69,12 @@ jobs:
     - name: Unzip
       shell: bash
       run: |
-        unzip Web.zip -d ./web/
+        unzip Web.zip -d ./build-web/
         ls -al
 
     - name: Deploy to Github Pages 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        folder: ./web/
+        folder: ./build-web/
         branch: main
     
