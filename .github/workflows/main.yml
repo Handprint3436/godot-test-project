@@ -76,5 +76,5 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         folder: ./build-web/
-        branch: main
+        branch: gh-pages
     
