@@ -34,5 +34,5 @@ jobs:
       uses: ncipollo/release-action@v1.12.0
       with:
         generateReleaseNotes: true
-        tag: `v${{ env.VERSION_NUMBER }}`
+        tag: v${{ env.VERSION_NUMBER }}
         artifacts: ${{ steps.export.outputs.archive_directory }}/*
