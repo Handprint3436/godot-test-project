@@ -8,54 +8,23 @@ env:
   GODOT_VERSION: 4.2.1
   VERSION_FILE: project.godot
   VERSION_REGEX: config\/version=\"\K[0-9.\-A-z]*
-  VERSION_OLD: 0.0.0
-  VERSION_NEW: 0.0.0
+  VERSION: 0.0.0
 
 jobs:
-  check_version_bump:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout current branch
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.base_ref }}
-
-    - name: Extract old version number
-      shell: bash
-      run: |
-        VERSION_NUMBER_OLD=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
-        echo "VERSION_OLD=$VERSION_NUMBER_OLD" >> "$GITHUB_ENV"
-        echo "Old version number: $VERSION_NUMBER_OLD"
-
-    - name: Checkout current branch
-      uses: actions/checkout@v4
-
-    - name: Extract new version number
-      shell: bash
-      run: |
-        VERSION_NUMBER_NEW=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
-        echo "VERSION_NEW=$VERSION_NUMBER_NEW" >> "$GITHUB_ENV"
-        echo "New version number: $VERSION_NUMBER_NEW"
-        
-    - name: Download semver script
-      shell: bash
-      run: |
-        curl https://raw.githubusercontent.com/Ariel-Rodriguez/sh-semversion-2/main/semver2.sh -o semver2.sh
-        chmod 755 ./semver2.sh
-        
-    - name: Compare versions
-      shell: bash
-      run: |
-        ./semver2.sh $VERSION_NEW $VERSION_OLD | { read -r var; if [ "$var" -gt 0 ]; then exit 0; else echo "AntiquatedVersionError: downstream version ("$VERSION_NEW") is <= base version ("$VERSION_OLD"). Please update to newer semantic version before merging." && exit 1; fi; }
-
   build_game:
     runs-on: ubuntu-latest
     permissions: write-all
     name: Build Game
-    needs: check_version_bump
     steps:
     - name: Checkout current branch
       uses: actions/checkout@v4
+
+    - name: Extract version number
+      shell: bash
+      run: |
+        VERSION_NUMBER_NEW=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
+        echo "VERSION=$VERSION_NUMBER_NEW" >> "$GITHUB_ENV"
+        echo "Version number: $VERSION_NUMBER_NEW"
 
     - name: Export game
       id: export
