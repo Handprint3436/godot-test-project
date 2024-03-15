@@ -24,7 +24,7 @@ jobs:
       shell: bash
       run: |
         VERSION_NUMBER=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
-        echo "Found Version number: $VERSION_NUMBER
+        echo "Found Version number: $VERSION_NUMBER"
     
     - name: export game
       id: export
