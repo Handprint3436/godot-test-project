@@ -25,7 +25,7 @@ jobs:
       run: |
         VERSION_NUMBER_OLD=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
         echo "VERSION_OLD=$VERSION_NUMBER_OLD" >> "$GITHUB_ENV"
-        echo "Old version number: $VERSION_OLD"
+        echo "Old version number: $VERSION_NUMBER_OLD"
 
     - name: Checkout current branch
       uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
       run: |
         VERSION_NUMBER_NEW=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
         echo "VERSION_NEW=$VERSION_NUMBER_NEW" >> "$GITHUB_ENV"
-        echo "New version number: $VERSION_NEW"
+        echo "New version number: $VERSION_NUMBER_NEW"
         
     - name: Download semver script
       shell: bash
