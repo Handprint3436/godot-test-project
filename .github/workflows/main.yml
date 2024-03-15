@@ -72,6 +72,15 @@ jobs:
         unzip Web.zip -d ./build-web/
         ls -al
 
+    - name: Add coi-service-worker
+      shell: bash
+      run: |
+        git clone https://github.com/gzuidhof/coi-serviceworker.git
+        mv coi-serviceworker/coi-serviceworker.js ./build-web/coi-serviceworker.js
+        sed -i '3 i <script src="coi-serviceworker.js"></script>' ./build-web/index.html
+        ls -al ./build-web/
+
+
     - name: Deploy to Github Pages 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
