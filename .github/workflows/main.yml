@@ -52,6 +52,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish to Pages
     needs: build_game
+    permissions:
+      contents: write
     steps:
     - name: Checkout current branch
       uses: actions/checkout@v4
