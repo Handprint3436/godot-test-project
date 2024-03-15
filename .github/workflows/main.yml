@@ -14,11 +14,18 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v4
+    
+    - name: install dependencies
+      shell: bash
+      run: |
+        apt-get update && apt-get install -y rsync
+    
     - name: extract_version_number
       shell: bash
       run: |
         VERSION_NUMBER=`grep -Po "${{ env.VERSION_REGEX }}" ./${{ env.VERSION_FILE }}`
-        echo `Found Version number: ${{ env.VERSION_NUMBER }}`
+        echo "Found Version number: $VERSION_NUMBER
+    
     - name: export game
       id: export
       uses: firebelley/godot-export@v5.2.1
@@ -27,12 +34,24 @@ jobs:
         godot_export_templates_download_url: https://downloads.tuxfamily.org/godotengine/4.2.1/Godot_v4.2.1-stable_export_templates.tpz
         relative_project_path: ./
         archive_output: true
-
+    
+    - name: copy web build
+      shell: bash
+      run: |
+        cp ${{ steps.export.outputs.build_directory }}/Web/ build/web
+        
       # This release action has worked well for me. However, you can most likely use any release action of your choosing.
       # https://github.com/ncipollo/release-action
     - name: create release
       uses: ncipollo/release-action@v1.12.0
       with:
         generateReleaseNotes: true
-        tag: v${{ env.VERSION_NUMBER }}
+        tag: "v$VERSION_NUMBER"
         artifacts: ${{ steps.export.outputs.archive_directory }}/*
+
+    - name: Deploy 🚀
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        folder: build/web
+        branch: main
+      
