@@ -66,12 +66,12 @@ jobs:
     - name: Unzip
       shell: bash
       run: |
-        unzip Web.zip
+        unzip Web.zip -d ./web/
         ls -al
 
     - name: Deploy to Github Pages 🚀
       uses: JamesIves/github-pages-deploy-action@v4
       with:
-        folder: Web/
+        folder: ./web/
         branch: main
     
